@@ -9,7 +9,7 @@ const Foods = () => {
   const [categoria, setCategoria] = useState<InterfaceCategoria[]>([])
   const [selectedCategoria, SelectedCat]= useState<String>("") 
   const [comida, setComida]= useState<InterfaceComida[]>([]) 
-  
+  const [pesquisa, setPesquisa]=useState<String>()
   
   useEffect(() => {
     Axios.get("https://www.themealdb.com/api/json/v1/1/categories.php")
@@ -25,6 +25,14 @@ const Foods = () => {
   }, [selectedCategoria])
 
   
+  useEffect(() => {
+    if (pesquisa !== null ){
+    Axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${pesquisa}`)
+      .then(resposta => setComida (resposta.data.meals))
+    }
+  }, [pesquisa])
+
+  
   
 
   return (
@@ -32,7 +40,7 @@ const Foods = () => {
       <h1>Tipos de pratos</h1>
       <p>
         Selecione uma categoria ou digite a comida (em inglês):
-        <input type="text" placeholder="Digite a comida..." onChange={(event) => SelectedCat (event.target.value)}/>
+        <input type="text" placeholder="Digite a comida..." onChange={(event) => setPesquisa  (event.target.value)}/>
       </p>
 
       <ul >
@@ -57,7 +65,7 @@ const Foods = () => {
             comida !== null  && comida.map((item: InterfaceComida) => (
               <div className="food-item" key={item.idMeal}>
                 <img src={item.strMealThumb} alt={item.strMeal}/>
-                 <p>{item. strMeal}</p>
+                 <p>{item.strMeal}</p>
                </div>
             ))
           }
